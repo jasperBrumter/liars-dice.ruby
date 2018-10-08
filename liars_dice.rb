@@ -24,12 +24,13 @@ end
 
 def play_round(score_hash, goes_first)
   puts "Ready to roll your dice? Next round starts in:"
-  puts "First player is #{goes_first}\n\n"
 
   this_round_dice = roll_dice(score_hash)
   puts "your dice are #{this_round_dice["player"].inspect}"
 
-  make_decision(this_round_dice, goes_first, "0")
+  get_round_to_player(this_round_dice, goes_first, "0 0")
+
+  #
 
 
 
