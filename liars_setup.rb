@@ -16,6 +16,7 @@ def rules(user_input)
 end
 
 def players_setup(user_input)
+  system "clear"
   until (1..6).include? user_input.to_i
     puts "Not a valid input. Please choose the number of CPU opponents (ideally 1,2,3)"
     user_input = gets.chomp
@@ -31,6 +32,7 @@ def players_setup(user_input)
 end
 
 def number_of_dice(this_hash, number)
+  system "clear"
   until (1..5).include? number.to_i
     puts "Not a valid input. Please choose another number of dice for each player (usually 5, could be less)"
     number = gets.chomp
