@@ -1,4 +1,5 @@
 def rules(user_input)
+  system "clear"
   if user_input == "n"
     puts "
     Five dice are used per player with dice cups used for concealment.\n
@@ -7,7 +8,7 @@ def rules(user_input)
      - the player may bid a higher quantity of any particular face, or the same quantity of a higher face (allowing a player to 're-assert' a face value they believe prevalent if another player increased the face value on their bid);\n
      - the player may bid a higher quantity of the same face, or any particular quantity of a higher face (allowing a player to 'reset' the quantity);\n
      - the player may bid a higher quantity of the same face or the same quantity of a higher face (the most restrictive; a reduction in either face value or quantity is never allowed).\n
-     - If the current player challenges the previous bid, all dice are revealed. If the bid is valid (at least as many of the face value and any wild aces are showing as were bid), the bidder wins. Otherwise, the challenger wins. The player who loses a round loses one of their dice. The last player to still retain a die (or dice) is the winner. The loser of the last round starts the bidding on the next round. If the loser of the last round was eliminated, the next player starts the new round.\n\n Got it? Great. Let's start playing."
+     - If the current player challenges the previous bid, all dice are revealed. If the bid is valid (at least as many of the face value and any wild aces are showing as were bid), the bidder wins. Otherwise, the challenger wins. The player who loses a round loses one of their dice. The last player to still retain a die (or dice) is the winner. The loser of the last round starts the bidding on the next round. If the loser of the last round was eliminated, the next player starts the new round.\n\n\n\n\n\n Got it? Great. Let's start playing."
 
   else
     puts "Great. Let's start playing."
