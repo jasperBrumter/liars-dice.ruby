@@ -23,12 +23,21 @@ def initialize_game
 end
 
 def play_round(score_hash, goes_first)
+  puts score_hash
   puts "Ready to roll your dice? Next round starts in:"
 
   this_round_dice = roll_dice(score_hash)
   puts "your dice are #{this_round_dice["player"].inspect}"
 
-  get_round_to_player(this_round_dice, goes_first, "1 1")
+
+  round_data = get_round_to_player(this_round_dice, goes_first, "1 1")
+  puts round_data.inspect
+  round_outcome(round_data[0], round_data[1], round_data[2], this_round_dice)
+end
+
+def round_outcome(player, decision, bet, hash)
+  puts "#{player} said #{decision} to #{bet}"
+  bet = bet.split(" ")
 end
   #
 

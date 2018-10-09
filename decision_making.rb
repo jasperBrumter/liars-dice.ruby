@@ -1,6 +1,8 @@
 def valid_input?(previous, input)
+  return true if ["no", "yes"].include? input.downcase
   previous = previous.split(" ")
   input = input.split(" ")
+
   if (previous[0].to_i < input[0].to_i) && (2..6).include?(input[1].to_i)
     return true
   elsif (previous[0].to_i == input[0].to_i) && (previous[1].to_i..6).include?(input[1].to_i) && input[1].to_i > previous[1].to_i
@@ -8,8 +10,6 @@ def valid_input?(previous, input)
   else
     return false
   end
-
-
 end
 
 def next_player(hash, player)
@@ -22,7 +22,18 @@ def next_player(hash, player)
   end
 end
 
+def previous_player(hash, player)
+  i = hash.keys.index(player)
+  length = hash.keys.length - 1
+  if i == 0
+    return hash.keys[length]
+  else
+    return hash.keys[i-1]
+  end
+end
+
 def get_round_to_player(hash, this_player, bet)
+  #player makes his own decision
   if this_player == "player"
     puts "\nNow it is your turn, previous bet was #{bet}"
 
@@ -31,26 +42,26 @@ def get_round_to_player(hash, this_player, bet)
       puts "That was not a valid input, remember to bet a higher number of dice"
       next_input = gets.chomp
     end
+    #end if decision is yes or no
+    if ["no", "yes"].include? next_input
+      return [this_player, next_input, bet]
+    end
+    #if not, continue playing
     get_round_to_player(hash, next_player(hash, "player"), next_input)
 
-  else this_player == "player"
+  #computers makes decision
+  else
     puts "\n\n\nplayer #{this_player} is thinking..."
     sleep(4)
     decision = make_decision(hash, this_player, bet)
-
-    #makes decision
-    puts "#{this_player}'s dice are #{hash[this_player]}"
-    puts "decision is #{decision}s"
-
+    puts "#{this_player}'s decision is #{decision}"
 
     #if decision = YES or NO, end
     if ["no", "yes"].include? decision
-      puts "we are here"
-      return decision
+      return [this_player, decision, bet]
     end
 
-
-    #if decision is bet, continue
+    #if decision is bet, continue with next player
     get_round_to_player(hash, next_player(hash, this_player), decision)
   end
 end
@@ -75,13 +86,11 @@ def make_decision(hash, this_player, previous)
       number_of += 1
     end
   end
-  puts "#{this_player} has #{hash[this_player].length} dice, including #{number_of} #{previous_bet[1]}s"
   #-----------------
 
   #calculate normal distribution
   other_dice = total_dice - hash[this_player].length
   normal_distribution = other_dice / 3.0 + number_of
-  puts "since there are #{other_dice} other dice, the normal distribution should be #{normal_distribution}"
   #-----------------
 
   if previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
