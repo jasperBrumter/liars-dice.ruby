@@ -28,8 +28,8 @@ def play_round(score_hash, goes_first)
   this_round_dice = roll_dice(score_hash)
   puts "your dice are #{this_round_dice["player"].inspect}"
 
-  get_round_to_player(this_round_dice, goes_first, "0 0")
-
+  get_round_to_player(this_round_dice, goes_first, "1 1")
+end
   #
 
 
@@ -44,4 +44,4 @@ def play_round(score_hash, goes_first)
 #Player is Out
 
 #play_round(new_score_hash, new_goes_first)
-end
+
