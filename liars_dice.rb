@@ -38,9 +38,32 @@ end
 def round_outcome(player, decision, bet, hash)
   puts "#{player} said #{decision} to #{bet}"
   bet = bet.split(" ")
+  puts hash.inspect
+  count = 0
+  hash.values.each do |cup|
+    cup.each do |dice|
+      count += 1 if [bet[1].to_i, 1].include? dice
+    end
+  end
+  puts "there are #{count} #{bet[1]}s"
+  case decision
+  when "no"
+    if count > bet[0].to_i
+      puts "that is more than #{bet[0]}, so #{player} loses a dice"
+    else
+      puts "that is less than #{bet[0]}, so #{previous_player(hash, player)} loses a dice"
+    end
+  when "yes"
+    if count == bet[0].to_i
+      puts "that is exactly the right number of #{bet[1]}s, so #{player} wins a dice!!"
+    else
+      puts "that was a wrong call, so #{player} loses a dice"
+    end
+  end
 end
-  #
 
+def sentence_outcome()
+end
 
 
 
@@ -53,4 +76,3 @@ end
 #Player is Out
 
 #play_round(new_score_hash, new_goes_first)
-
