@@ -92,8 +92,9 @@ def make_decision(hash, this_player, previous)
   other_dice = total_dice - hash[this_player].length
   normal_distribution = other_dice / 3.0 + number_of
   #-----------------
-
-  if previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
+  if previous_bet[0].to_i > other_dice + number_of
+    return "no"
+  elsif previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
     return "no"
   elsif previous_bet[0].to_i > 1.5 * normal_distribution && rand(1..10) > 5
     return "no"
@@ -115,4 +116,3 @@ def make_decision(hash, this_player, previous)
     return str_answer
   end
 end
-

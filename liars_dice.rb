@@ -1,5 +1,6 @@
 require_relative "liars_setup"
 require_relative "decision_making"
+require "CSV"
 
 def initialize_game
   #Rules in liars_setup.rb
@@ -46,25 +47,40 @@ def round_outcome(player, decision, bet, hash)
     end
   end
   puts "there are #{count} #{bet[1]}s"
+  verbose_outcome(hash, player, bet, count, decision)
+end
+
+def verbose_outcome(hash, player, bet, count, decision)
   case decision
   when "no"
     if count > bet[0].to_i
       puts "that is more than #{bet[0]}, so #{player} loses a dice"
+      write_analytics("WRONG", decision, bet[0], count)
+    elsif count == bet[0].to_i
+      puts "there are exactly #{bet[0]}, #{player} should have said 'yes' !"
+      write_analytics("WRONG", decision, bet[0], count)
     else
       puts "that is less than #{bet[0]}, so #{previous_player(hash, player)} loses a dice"
+      write_analytics("RIGHT", decision, bet[0], count)
     end
   when "yes"
     if count == bet[0].to_i
       puts "that is exactly the right number of #{bet[1]}s, so #{player} wins a dice!!"
+      write_analytics("RIGHT", decision, bet[0], count)
     else
       puts "that was a wrong call, so #{player} loses a dice"
+      write_analytics("WRONG", decision, bet[0], count)
     end
   end
 end
 
-def sentence_outcome()
+def write_analytics(right, decision, bet, count)
+  csv_options = { col_sep: ',', force_quotes: true, quote_char: '"' }
+  filepath    = 'cpu_analytics.csv'
+  CSV.open(filepath, 'a', csv_options) do |csv|
+    csv << [right, decision, bet, count]
+  end
 end
-
 
 
 
