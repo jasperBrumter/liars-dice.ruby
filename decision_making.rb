@@ -36,6 +36,7 @@ def get_round_to_player(hash, this_player, bet)
   #player makes his own decision
   if this_player == "player"
     puts "\nNow it is your turn, previous bet was #{bet}"
+    puts "your dice are #{hash["player"].inspect}"
 
     next_input = gets.chomp
     until valid_input?(bet, next_input)

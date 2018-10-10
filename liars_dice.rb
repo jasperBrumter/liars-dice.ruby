@@ -24,7 +24,6 @@ def initialize_game
 end
 
 def play_round(score_hash, goes_first)
-  puts score_hash
   puts "Ready to roll your dice? Next round starts in:"
 
   this_round_dice = roll_dice(score_hash)
@@ -47,7 +46,24 @@ def round_outcome(player, decision, bet, hash)
     end
   end
   puts "there are #{count} #{bet[1]}s"
-  verbose_outcome(hash, player, bet, count, decision)
+  next_data = verbose_outcome(hash, player, bet, count, decision)
+  possible_next_player = next_player(hash, next_data[0])
+
+  hash.keys.each do |players|
+    hash[players] = hash[players].length
+    hash[players] += next_data[1] if players == next_data[0]
+    hash[players] = 5 if hash[players] > 5
+    hash.delete(players) if hash[players] == 0
+  end
+
+  puts hash.inspect
+  if hash.key?(next_data[0])
+    play_round(hash, next_data[0]) unless game_done?(hash)
+  else
+    play_round(hash, possible_next_player) unless game_done?(hash)
+  end
+
+  puts "Game finished !"
 end
 
 def verbose_outcome(hash, player, bet, count, decision)
@@ -56,20 +72,25 @@ def verbose_outcome(hash, player, bet, count, decision)
     if count > bet[0].to_i
       puts "that is more than #{bet[0]}, so #{player} loses a dice"
       write_analytics("WRONG", decision, bet[0], count)
+      return[player, -1]
     elsif count == bet[0].to_i
       puts "there are exactly #{bet[0]}, #{player} should have said 'yes' !"
       write_analytics("WRONG", decision, bet[0], count)
+      return[player, -1]
     else
       puts "that is less than #{bet[0]}, so #{previous_player(hash, player)} loses a dice"
       write_analytics("RIGHT", decision, bet[0], count)
+      return[previous_player(hash, player), -1]
     end
   when "yes"
     if count == bet[0].to_i
       puts "that is exactly the right number of #{bet[1]}s, so #{player} wins a dice!!"
       write_analytics("RIGHT", decision, bet[0], count)
+      return [player, +1]
     else
       puts "that was a wrong call, so #{player} loses a dice"
       write_analytics("WRONG", decision, bet[0], count)
+      return [player, -1]
     end
   end
 end
@@ -79,6 +100,14 @@ def write_analytics(right, decision, bet, count)
   filepath    = 'cpu_analytics.csv'
   CSV.open(filepath, 'a', csv_options) do |csv|
     csv << [right, decision, bet, count]
+  end
+end
+
+def game_done?(hash)
+  if hash.keys.length == 1
+    return true
+  else
+    return false
   end
 end
 
