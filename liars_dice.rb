@@ -11,15 +11,15 @@ def initialize_game
   puts "How many CPU opponents would you want this game? (1, 2 or 3 are advised)"
   score_hash = players_setup(number_of_opponents = gets.chomp.to_i)
 
-  puts score_hash
+
   #initialize player and score hash
   puts "How many dice would you like to play with? (usually 5, but it can be less)"
   score_hash = number_of_dice(score_hash, dice_number = gets.chomp)
 
-  puts score_hash
 
   goes_first = score_hash.keys[rand(0..number_of_opponents)]
   puts "the first player was randomly selected to be #{goes_first}\n\n"
+
   play_round(score_hash, goes_first)
 end
 
@@ -27,25 +27,32 @@ def play_round(score_hash, goes_first)
   puts "Ready to roll your dice? Next round starts in:"
 
   this_round_dice = roll_dice(score_hash)
+  round_summary_table(this_round_dice)
   puts "your dice are #{this_round_dice["player"].inspect}"
 
 
   round_data = get_round_to_player(this_round_dice, goes_first, "1 1")
-  puts round_data.inspect
+  round_summary_table(this_round_dice)
   round_outcome(round_data[0], round_data[1], round_data[2], this_round_dice)
 end
 
 def round_outcome(player, decision, bet, hash)
-  puts "#{player} said #{decision} to #{bet}"
   bet = bet.split(" ")
-  puts hash.inspect
+  system "clear"
+  round_summary_table(hash)
+  puts "#{player} said #{decision} to #{bet[0]} #{bet[1]}s"
   count = 0
-  hash.values.each do |cup|
+  hash.each do |player, cup|
+    his_count = 0
     cup.each do |dice|
+      his_count += 1 if [bet[1].to_i, 1].include? dice
       count += 1 if [bet[1].to_i, 1].include? dice
     end
+    puts "#{player} has #{his_count} #{bet[1]}s    :   #{hash[player]}"
+    puts "..."
+    sleep(1)
   end
-  puts "there are #{count} #{bet[1]}s"
+  puts "In total there are #{count} #{bet[1]}s"
   next_data = verbose_outcome(hash, player, bet, count, decision)
   possible_next_player = next_player(hash, next_data[0])
 
@@ -56,7 +63,6 @@ def round_outcome(player, decision, bet, hash)
     hash.delete(players) if hash[players] == 0
   end
 
-  puts hash.inspect
   if hash.key?(next_data[0])
     play_round(hash, next_data[0]) unless game_done?(hash)
   else
@@ -67,6 +73,8 @@ def round_outcome(player, decision, bet, hash)
 end
 
 def verbose_outcome(hash, player, bet, count, decision)
+  sleep(2)
+  system "clear"
   case decision
   when "no"
     if count > bet[0].to_i
@@ -93,6 +101,7 @@ def verbose_outcome(hash, player, bet, count, decision)
       return [player, -1]
     end
   end
+  round_summary_table(hash)
 end
 
 def write_analytics(right, decision, bet, count)
@@ -109,6 +118,18 @@ def game_done?(hash)
   else
     return false
   end
+end
+
+def round_summary_table(hash)
+  puts "-----------------------"
+  total = 0
+  hash.keys.each do |s|
+    puts "#{s} : #{hash[s].length} dice"
+    total += hash[s].length
+  end
+  puts "-----------------------"
+  puts "Total : #{total} dice"
+  puts "-----------------------"
 end
 
 

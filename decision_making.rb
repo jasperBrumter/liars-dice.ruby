@@ -53,7 +53,7 @@ def get_round_to_player(hash, this_player, bet)
   #computers makes decision
   else
     puts "\n\n\nplayer #{this_player} is thinking..."
-    sleep(4)
+    sleep(3.5)
     decision = make_decision(hash, this_player, bet)
     puts "#{this_player}'s decision is #{decision}"
 
@@ -89,31 +89,100 @@ def make_decision(hash, this_player, previous)
   end
   #-----------------
 
-  #calculate normal distribution
+  # calculate normal distribution
   other_dice = total_dice - hash[this_player].length
   normal_distribution = other_dice / 3.0 + number_of
+   #-----------------
+  if total_dice < 5
+    if previous_bet[0].to_i > other_dice + number_of
+      return "no"
+    elsif previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
+      return "no"
+    elsif previous_bet[0].to_i > 1.5 * normal_distribution && rand(1..10) > 5
+      return "no"
+    elsif previous_bet[0].to_i > 1.2 * normal_distribution && rand(1..10) == 1
+      return "yes"
+    elsif previous_bet[0].to_i > normal_distribution && number_of <= 1 && rand(1..10) > 3
+      return "no"
+    else
+      return bet(0, 1, previous)
+    end
+
   #-----------------
-  if previous_bet[0].to_i > other_dice + number_of
-    return "no"
-  elsif previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
-    return "no"
-  elsif previous_bet[0].to_i > 1.5 * normal_distribution && rand(1..10) > 5
-    return "no"
-  elsif previous_bet[0].to_i > 1.2 * normal_distribution && rand(1..10) == 1
-    return "yes"
-  elsif previous_bet[0].to_i > normal_distribution && number_of <= 1 && rand(1..10) > 3
-    return "no"
-  elsif previous_bet[0].to_i + 2 > normal_distribution && rand(1..10) > 3
-    str_answer += (rand(1..2) + previous_bet[0].to_i).to_s
-    str_answer += "  #{rand(2..6)}"
-    return str_answer
-  elsif previous_bet[0].to_i + 5 > normal_distribution && rand(1..10) > 2
-    str_answer += (rand(1..4) + previous_bet[0].to_i).to_s
-    str_answer += "  #{rand(2..6)}"
-    return str_answer
-  elsif rand(1..10)
-    str_answer += (rand(3..6) + previous_bet[0].to_i).to_s
-    str_answer += "  #{rand(2..6)}"
-    return str_answer
+  elsif total_dice < 10
+    if previous_bet[0].to_i > other_dice + number_of
+      return "no"
+    elsif previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
+      return "no"
+    elsif previous_bet[0].to_i > 1.5 * normal_distribution && rand(1..10) > 5
+      return "no"
+    elsif previous_bet[0].to_i > 1.2 * normal_distribution && rand(1..10) == 1
+      return "yes"
+    elsif previous_bet[0].to_i > normal_distribution && number_of <= 1 && rand(1..10) > 3
+      return "no"
+    elsif previous_bet[0].to_i + 2 > normal_distribution && rand(1..10) > 3
+      return bet(0, 1, previous)
+    elsif previous_bet[0].to_i + 5 > normal_distribution && rand(1..10) > 2
+      return bet(0, 2, previous)
+    else
+      return bet(0, 2, previous)
+    end
+  #-----------------
+  elsif total_dice < 15
+    if previous_bet[0].to_i > other_dice + number_of
+      return "no"
+    elsif previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
+      return "no"
+    elsif previous_bet[0].to_i > 1.5 * normal_distribution && rand(1..10) > 5
+      return "no"
+    elsif previous_bet[0].to_i > 1.2 * normal_distribution && rand(1..10) == 1
+      return "yes"
+    elsif previous_bet[0].to_i > normal_distribution && number_of <= 1 && rand(1..10) > 3
+      return "no"
+    elsif previous_bet[0].to_i + 2 > normal_distribution && rand(1..10) > 3
+      return bet(0, 2, previous)
+    elsif previous_bet[0].to_i + 5 > normal_distribution && rand(1..10) > 2
+      return bet(0, 3, previous)
+    else
+      return bet(1, 3, previous)
+    end
+
+  else
+  #----------------
+    if previous_bet[0].to_i > other_dice + number_of
+      return "no"
+    elsif previous_bet[0].to_i > 2 * normal_distribution && rand(1..10) > 2
+      return "no"
+    elsif previous_bet[0].to_i > 1.5 * normal_distribution && rand(1..10) > 5
+      return "no"
+    elsif previous_bet[0].to_i > 1.2 * normal_distribution && rand(1..10) == 1
+      return "yes"
+    elsif previous_bet[0].to_i > normal_distribution && number_of <= 1 && rand(1..10) > 3
+      return "no"
+    elsif previous_bet[0].to_i + 2 > normal_distribution && rand(1..10) > 3
+      return bet(1, 3, previous)
+    elsif previous_bet[0].to_i + 5 > normal_distribution && rand(1..10) > 2
+      return bet(2, 4, previous)
+    else
+      return bet(3, 6, previous)
+    end
   end
 end
+
+def bet(min_range, max_range, previous)
+  previous_bet = previous.split(" ")
+  second = rand(2..6)
+  first = rand(min_range..max_range)
+  if first == 0 && previous_bet[1].to_i == 6
+    first = 1
+  elsif first == 0 && previous_bet[1].to_i == 5
+    second = 6
+  elsif first == 0
+    second = rand(previous_bet[1].to_i + 1..6)
+  end
+
+  first += previous_bet[0].to_i
+  return "#{first} #{second}"
+end
+
+
